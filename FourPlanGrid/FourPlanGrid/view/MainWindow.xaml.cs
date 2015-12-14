@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,8 @@ namespace FourPlanGrid
         public MainWindow()
         {
             InitializeComponent();
-           
+            this.DataContext = new CGameToken();
+
         }
 
         private void Player1NameGotFocus(object sender, RoutedEventArgs e)
@@ -46,5 +48,15 @@ namespace FourPlanGrid
         {
 
         }
+
+        //public CGameToken Token;
+        private void NewGameButton_Click(object sender, RoutedEventArgs e)
+        {
+            (this.DataContext as CGameToken).Color = Color.FromArgb(255, 255, 0, 0);
+        }
+
+       
+        
+
     }
 }
