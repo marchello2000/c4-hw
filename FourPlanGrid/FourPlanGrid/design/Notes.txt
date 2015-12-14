@@ -64,3 +64,37 @@ Sleepy time. For tomorrow:
 2. Identify some unit test candidates. Seems like the best option is to test the "connect 4" logic. AI if we get to that.
 3. Implement a basic model and try to connect view (how about just the dropping part first and "new game")
 4. Add "connect 4" stuff
+
+
+12/9/15
+
+Game states:
+GAMEOVER // after a game finishes but before pre-game
+PREGAME // initial state or after GAMEOVER (timer) but before user begins new game (INGAME)
+INGAME // the state after the user clicks the new game button (could be during a game)
+
+Model:
+The basic code flow:
+	Player n clicks a drop clickable c[i]
+	 OnClick 
+	  controller.drop(i, n);
+
+	controller.Drop(int index, int player) 
+	 if ret = model.Drop(index, player)
+		if model.Winner(model.Top(index), index)); // don't care which player
+			SetGameState("GAMEOVER"); // send message to view or just set a state variable
+			SetWinner(player);
+	 return ret;
+
+	Draw()
+	 viewBoard.Draw()
+	 for i,j 
+	  if player = model.GetCell(i,j) && player = 1 or 2
+	   DrawCell(i, j, GetPlayer(player).Color)
+
+..hmm, doesn't seem to be an obvious draw method for the window or the canvas. I guess wpf handles this, so I just 
+need to keep track of the references to the tokens if I want to update them. The drop row probably since i want it to 
+highlight on mouseover. 
+	  
+12/13/15
+

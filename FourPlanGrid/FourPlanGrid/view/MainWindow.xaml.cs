@@ -34,5 +34,17 @@ namespace FourPlanGrid
         {
             this.Resources["rowHeight"] = new GridLength(50);
         }
+
+
+        /* Just gonna play around here for a minute */
+        void CreateMoveGrid(int nColumns)
+        {
+
+        }
+
+        void CreateGameBoard(int nRows, int nColumns)
+        {
+
+        }
     }
 }

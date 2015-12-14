@@ -6,13 +6,16 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:FourPlanGrid"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded">
+        Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded" Name="UI">
     <Window.Resources>
+        <!--Static Resources -->
         <GridLength x:Key="CellSize">50</GridLength>
         <sys:Double x:Key="RectSize">50</sys:Double>
         <sys:Double x:Key="TokenSize">45</sys:Double>
+        <!--Dynamic Resources-->
         <GridLength x:Key="rowHeight"/>
     </Window.Resources>
+    <!--Top level window grid. Two columns defining the left/right panes-->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
@@ -21,7 +24,7 @@
 
         <GridSplitter Grid.Column ="0" Background="Gray" Width="5"
                 HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="145,0,0,0" IsEnabled="False"/>
-
+        <!--Layout for the left pane-->
         <Grid x:Name="LeftPane" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Width="150">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
@@ -47,33 +50,21 @@
 
         </Grid>
 
+        <!--Right pane canvas-->
         <Canvas Grid.Row="0" Grid.Column="1" Background="Black"/>
+
+        <!--Layout for the right pane-->
         <Grid Grid.Row="0" Grid.Column="1" Margin="15,15,15,15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="80"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             
-            <!-- Put the clickable moves here -->
-            
-            <!-- Another nested grid for the actual board -->
-            <Grid x:Name="GameBoard" Grid.Row="1" Grid.Column="0">
-                
-                
-                <!--
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="{StaticResource CellSize}"/>
-                </Grid.RowDefinitions>
+            <!--Move Grid - the clickables for dropping a token-->
+            <Grid x:Name="MoveGrid" Grid.Row="0" Grid.Column="0"/>
 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{StaticResource CellSize}"/>
-                </Grid.ColumnDefinitions>
-
-                <Rectangle Grid.Row="0" Grid.Column="0" Fill="White" Width="{StaticResource RectSize}" Height="{StaticResource RectSize}"/>
-                <Ellipse Grid.Row="0" Grid.Column="0" Fill="Black" Width="{StaticResource TokenSize}" Height="{StaticResource TokenSize}"/>
-                -->
-            </Grid>
-            
+            <!--Another nested grid for the actual board-->
+            <Grid x:Name="GameGrid" Grid.Row="1" Grid.Column="0"/>
         </Grid>
 
 
