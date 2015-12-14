@@ -98,3 +98,4 @@ highlight on mouseover.
 	  
 12/13/15
 
+Going to break things and play with binding because it seems the wpf way of doing shit.
