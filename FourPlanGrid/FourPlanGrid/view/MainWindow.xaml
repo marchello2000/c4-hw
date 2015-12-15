@@ -6,12 +6,14 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:FourPlanGrid"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded" Name="UI">
+        Title="MainWindow" Height="327.675" Width="918.21" Loaded="Window_Loaded" Name="UI" SizeChanged="MainWindow_SizeChanged">
     <Window.Resources>
         <!--Static Resources -->
-        <GridLength x:Key="CellSize">50</GridLength>
+
         <sys:Double x:Key="RectSize">50</sys:Double>
-        <sys:Double x:Key="TokenSize">45</sys:Double>
+        <sys:Double x:Key="TokenSize"/>
+        <GridLength x:Key="LeftPaneRow">50</GridLength>
+        <GridLength x:Key="CellSize">50</GridLength>
         <!--Dynamic Resources-->
         <GridLength x:Key="rowHeight"/>
     </Window.Resources>
@@ -27,11 +29,11 @@
         <!--Layout for the left pane-->
         <Grid x:Name="LeftPane" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Width="150">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="{DynamicResource ResourceKey=rowHeight}"/>
+                <RowDefinition Height="{StaticResource ResourceKey=LeftPaneRow}"/>
+                <RowDefinition Height="{StaticResource ResourceKey=LeftPaneRow}"/>
+                <RowDefinition Height="{StaticResource ResourceKey=LeftPaneRow}"/>
+                <RowDefinition Height="{StaticResource ResourceKey=LeftPaneRow}"/>
+                <RowDefinition Height="{StaticResource ResourceKey=LeftPaneRow}"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -44,33 +46,74 @@
 
             <Ellipse x:Name="Player1ColorEllipse" Grid.Row="1" Grid.Column="0" Width="25" Height="25" Margin="0,0,10,0" HorizontalAlignment="Right" Fill="Red" Stroke="Black"/>
             <Ellipse x:Name="Player2ColorEllipse" Grid.Row="2" Grid.Column="0" Width="25" Height="25" Margin="0,0,10,0" HorizontalAlignment="Right" Fill="Green" Stroke="Black"/>
-            
-            <Button x:Name="NewGameButton" Grid.Row="4" Grid.Column="0" Content="New Game" Width="70" Height="20" Margin="0,0,0,0" VerticalAlignment="Bottom"/>
+
+            <Button x:Name="NewGameButton" Grid.Row="4" Grid.Column="0" Content="New Game" Width="70" Height="20" Margin="0,0,0,0" VerticalAlignment="Bottom" Click="NewGameButton_Click"/>
 
 
         </Grid>
-
-        <!--Right pane canvas-->
-        <Canvas Grid.Row="0" Grid.Column="1" Background="Black"/>
-
         <!--Layout for the right pane-->
-        <Grid Grid.Row="0" Grid.Column="1" Margin="15,15,15,15">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            
+        <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,0">
+
             <!--Move Grid - the clickables for dropping a token-->
-            <Grid x:Name="MoveGrid" Grid.Row="0" Grid.Column="0"/>
+            <Grid x:Name="TheGrid" Grid.Row="0" Grid.Column="0" SizeChanged="MoveGrid_SizeChanged">
 
-            <!--Another nested grid for the actual board-->
-            <Grid x:Name="GameGrid" Grid.Row="1" Grid.Column="0"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Ellipse Grid.Column="0" Grid.Row="0"
+                         Width="{DynamicResource ResourceKey=TokenSize}"
+                         Height="{DynamicResource ResourceKey=TokenSize}"
+                         Fill="#20999999"
+                         Stroke="DarkGray" MouseEnter="MoveEllipse_MouseEnter" MouseLeave="MoveEllipse_MouseLeave" MouseUp="MoveEllipse_MouseUp" Loaded="MoveEllipse_Loaded"/>
+                <Ellipse Grid.Column="1" Grid.Row="0"
+                         Width="{DynamicResource ResourceKey=TokenSize}"
+                         Height="{DynamicResource ResourceKey=TokenSize}"
+                         Fill="#20999999"
+                         Stroke="DarkGray" MouseEnter="MoveEllipse_MouseEnter" MouseLeave="MoveEllipse_MouseLeave" MouseUp="MoveEllipse_MouseUp"/>
+                <Ellipse Grid.Column="2" Grid.Row="0"
+                         Width="{DynamicResource ResourceKey=TokenSize}"
+                         Height="{DynamicResource ResourceKey=TokenSize}"
+                         Fill="#20999999"
+                         Stroke="DarkGray" MouseEnter="MoveEllipse_MouseEnter" MouseLeave="MoveEllipse_MouseLeave" MouseUp="MoveEllipse_MouseUp"/>
+                <Ellipse Grid.Column="3" Grid.Row="0"
+                         Width="{DynamicResource ResourceKey=TokenSize}"
+                         Height="{DynamicResource ResourceKey=TokenSize}"
+                         Fill="#20999999"
+                         Stroke="DarkGray" MouseEnter="MoveEllipse_MouseEnter" MouseLeave="MoveEllipse_MouseLeave" MouseUp="MoveEllipse_MouseUp"/>
+                <Ellipse Grid.Column="4" Grid.Row="0"
+                         Width="{DynamicResource ResourceKey=TokenSize}"
+                         Height="{DynamicResource ResourceKey=TokenSize}"
+                         Fill="#20999999"
+                         Stroke="DarkGray" MouseEnter="MoveEllipse_MouseEnter" MouseLeave="MoveEllipse_MouseLeave" MouseUp="MoveEllipse_MouseUp"/>
+                <Ellipse Grid.Column="5" Grid.Row="0"
+                         Width="{DynamicResource ResourceKey=TokenSize}"
+                         Height="{DynamicResource ResourceKey=TokenSize}"
+                         Fill="#20999999"
+                         Stroke="DarkGray" MouseEnter="MoveEllipse_MouseEnter" MouseLeave="MoveEllipse_MouseLeave" MouseUp="MoveEllipse_MouseUp"/>
+                <Ellipse Grid.Column="6" Grid.Row="0"
+                         Width="{DynamicResource ResourceKey=TokenSize}"
+                         Height="{DynamicResource ResourceKey=TokenSize}"
+                         Fill="#20999999"
+                         Stroke="DarkGray" MouseEnter="MoveEllipse_MouseEnter" MouseLeave="MoveEllipse_MouseLeave" MouseUp="MoveEllipse_MouseUp"/>
+            </Grid>
         </Grid>
-
-
-
     </Grid>
-
-
-
 </Window>

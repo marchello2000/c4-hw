@@ -59,7 +59,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="model\IFPGBoard.cs" />
+    <Compile Include="FPGModel\CEzBoard.cs" />
+    <Compile Include="FPGModel\IFPGBoard.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
