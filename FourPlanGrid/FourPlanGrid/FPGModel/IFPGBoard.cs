@@ -11,7 +11,7 @@ namespace FourPlanGrid.FPGModel
         bool Drop(int col, int value);
         bool CanDrop(int col);
         int Top(int col);
-        bool IsWinner(int row, int col);
+        bool IsWinner(int r, int c, out IEnumerable<Tuple<int, int>> cells);
         void Reset();
 
     }

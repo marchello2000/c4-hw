@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,22 +11,24 @@ namespace FourPlanGrid.FPGModel
     {
 
         #region interface methods
-        public bool IsWinner(int r, int c)
+        public bool IsWinner(int r, int c, out IEnumerable<Tuple<int, int>> cells)
         {
             bool ret = false;
-            List<Tuple<int, int>>[] cells = new List<Tuple<int, int>>[4] { new List<Tuple<int,int>>(),
+            List<Tuple<int, int>>[] cellSegments = new List<Tuple<int, int>>[4] { new List<Tuple<int,int>>(),
                                                                            new List<Tuple<int,int>>(),
                                                                            new List<Tuple<int,int>>(),
                                                                            new List<Tuple<int,int>>(), };
-            cells.Initialize();
-            ret |= IsWinnerHelper(r, c, cells[0], 1, 0); // right left
-            ret |= IsWinnerHelper(r, c, cells[1], 0, 1); // up down
-            ret |= IsWinnerHelper(r, c, cells[2], 1, 1); // 45
-            ret |= IsWinnerHelper(r, c, cells[3], 1, -1); // -45
+            cellSegments.Initialize();
+            ret |= IsWinnerHelper(r, c, cellSegments[0], 1, 0); // right left
+            ret |= IsWinnerHelper(r, c, cellSegments[1], 0, 1); // up down
+            ret |= IsWinnerHelper(r, c, cellSegments[2], 1, 1); // 45
+            ret |= IsWinnerHelper(r, c, cellSegments[3], 1, -1); // -45
 
+            cellSegments[0].Add(new Tuple<int, int>(r, c));
+            cells = cellSegments[0].Concat(cellSegments[1]);
+            cells = cells.Concat(cellSegments[2].Concat(cellSegments[3]));
 
             return ret;
-
         }
 
         private bool IsWinnerHelper(int r, int c, List<Tuple<int, int>> cells, int x, int y)

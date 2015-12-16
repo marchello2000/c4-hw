@@ -58,19 +58,6 @@ namespace FourPlanGrid
             if (!moveEllipse.IsEnabled) return;
             moveEllipse.Fill = new SolidColorBrush(Color.FromArgb(20, 153, 153, 153));
         }
-
-        private FPGModel.IFPGBoard _model = new FPGModel.CEzBoard(6, 7);
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
-            }
-        }
-
         private void MoveEllipse_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Ellipse clickable = sender as Ellipse;
@@ -81,8 +68,7 @@ namespace FourPlanGrid
             {
                 DisableMoveEllipse(clickable);
             }
-            clickable.IsEnabled = _model.CanDrop(col);
-            
+
 
             //create an ellipse
             Ellipse ep = new Ellipse();
@@ -96,19 +82,58 @@ namespace FourPlanGrid
                 Path = new PropertyPath("TokenSize"),
                 Source = this,
             });
-            ep.Fill = new SolidColorBrush(getPlayerColor());
+            ep.Fill = new RadialGradientBrush(Color.FromArgb(255, 255, 255, 255), getPlayerColor());
             Grid.SetColumn(ep, col);
-            Grid.SetRow(ep, getGridRow(_model.Top(col)));
+            Grid.SetRow(ep, getGridRow(_model.Top(col) - 1));
             this.TheGrid.Children.Add(ep);
 
+            IEnumerable<Tuple<int, int>> cells = null;
+
             // check for winner
-            if (_model.IsWinner(_model.Top(col) - 1, col))
+            if (_model.IsWinner(_model.Top(col) - 1, col, out cells))
             {
-                MessageBox.Show(string.Format("Player {0} wins!", _curPlayer));
                 SetEnableMoveEllipses(false);
+                foreach (Tuple<int, int> cell in cells)
+                {
+                    Ellipse epWin = new Ellipse();
+                    epWin.SetBinding(Ellipse.WidthProperty, new Binding()
+                    {
+                        Path = new PropertyPath("TokenSize"),
+                        Source = this,
+                    });
+                    epWin.SetBinding(Ellipse.HeightProperty, new Binding()
+                    {
+                        Path = new PropertyPath("TokenSize"),
+                        Source = this,
+                    });
+                    epWin.Fill = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                    epWin.Stroke = new SolidColorBrush(invertRGB(getPlayerColor()));
+                    Grid.SetColumn(epWin, cell.Item2);
+                    Grid.SetRow(epWin, getGridRow(cell.Item1));
+                    this.TheGrid.Children.Add(epWin);
+                }
             }
 
             _curPlayer = (_curPlayer == 1 ? 2 : 1);
+        }
+
+        private FPGModel.IFPGBoard _model = new FPGModel.CEzBoard(6, 7);
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+
+
+        private Color invertRGB(Color color)
+        {
+            return Color.FromArgb(color.A, (byte)(255 - color.R), (byte)(255 - color.G), (byte)(255 - color.B));
         }
 
         private Color getPlayerColor()
@@ -119,10 +144,10 @@ namespace FourPlanGrid
         {
             if (player == 1)
             {
-                return Color.FromArgb(255, 255, 0, 0);
+                return (this.Player1ColorEllipse.Fill as SolidColorBrush).Color;
             }
 
-            return Color.FromArgb(255, 0, 0, 0);
+            return (this.Player2ColorEllipse.Fill as SolidColorBrush).Color;
         }
 
         public double TokenSize
@@ -137,12 +162,7 @@ namespace FourPlanGrid
 
         private int getGridRow(int modelRow)
         {
-            return (NumberOfRows + 1) - (modelRow - 1);
-        }
-
-        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-
+            return (NumberOfRows + 1) - (modelRow);
         }
 
         private void MoveGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -154,11 +174,6 @@ namespace FourPlanGrid
                 TokenSize = (maxHeight < curWidth ? maxHeight : curWidth);
                 TokenSize *= (1 - TokenMarginFactor);
             }
-        }
-
-        private void MoveEllipse_Loaded(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void NewGameButton_Click(object sender, RoutedEventArgs e)

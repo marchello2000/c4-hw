@@ -6,7 +6,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:FourPlanGrid"
         mc:Ignorable="d"
-        Title="MainWindow" Height="327.675" Width="918.21" Loaded="Window_Loaded" Name="UI" SizeChanged="MainWindow_SizeChanged">
+        Title="MainWindow" Height="327.675" Width="918.21" Name="UI">
     <Window.Resources>
         <!--Static Resources -->
 
@@ -52,7 +52,7 @@
 
         </Grid>
         <!--Layout for the right pane-->
-        <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,0">
+        <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,0" Background="Black">
 
             <!--Move Grid - the clickables for dropping a token-->
             <Grid x:Name="TheGrid" Grid.Row="0" Grid.Column="0" SizeChanged="MoveGrid_SizeChanged">
@@ -82,7 +82,7 @@
                          Width="{DynamicResource ResourceKey=TokenSize}"
                          Height="{DynamicResource ResourceKey=TokenSize}"
                          Fill="#20999999"
-                         Stroke="DarkGray" MouseEnter="MoveEllipse_MouseEnter" MouseLeave="MoveEllipse_MouseLeave" MouseUp="MoveEllipse_MouseUp" Loaded="MoveEllipse_Loaded"/>
+                         Stroke="DarkGray" MouseEnter="MoveEllipse_MouseEnter" MouseLeave="MoveEllipse_MouseLeave" MouseUp="MoveEllipse_MouseUp"/>
                 <Ellipse Grid.Column="1" Grid.Row="0"
                          Width="{DynamicResource ResourceKey=TokenSize}"
                          Height="{DynamicResource ResourceKey=TokenSize}"
