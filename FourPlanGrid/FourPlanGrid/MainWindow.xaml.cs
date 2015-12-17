@@ -26,25 +26,6 @@ namespace FourPlanGrid
            
         }
 
-        private void Player1NameGotFocus(object sender, RoutedEventArgs e)
-        {
-            ((TextBox)sender).SelectAll();
-        }
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.Resources["rowHeight"] = new GridLength(50);
-        }
-
-
-        /* Just gonna play around here for a minute */
-        void CreateMoveGrid(int nColumns)
-        {
-
-        }
-
-        void CreateGameBoard(int nRows, int nColumns)
-        {
-
-        }
+        
     }
 }
