@@ -9,6 +9,7 @@
         public TokenView()
         {
             InitializeComponent();
+            this.DataContext = new ViewModels.TokenViewModel(ViewModels.ApplicationService.Instance.EventAggregator);
         }
     }
 }

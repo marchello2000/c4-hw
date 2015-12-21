@@ -23,6 +23,7 @@ namespace FourPlanGrid.Game.Views
         public GameSettingsView()
         {
             InitializeComponent();
+            this.DataContext = new ViewModels.GameSettingsViewModel(ViewModels.ApplicationService.Instance.EventAggregator);
         }
     }
 }

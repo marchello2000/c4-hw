@@ -1,97 +1,121 @@
 ﻿namespace FourPlanGrid.Game.ViewModels
 {
+    using System.Windows;
     using System.Windows.Media;
+    using Prism.Events;
     using FourPlanGrid.Windows;
     using FourPlanGrid.Game.Models;
-    using Prism.Events;
-    class TokenViewModel : ObservableObject
+    
+    
+    class TokenViewModel : ObservableObject, Logic.IPlayer
     {
         #region Fields
-        private TokenModel tokenModel;
         private Color color;
+
+        protected readonly IEventAggregator eventAggregator;
         #endregion
 
         #region Constructors
-        protected readonly IEventAggregator _eventAggregator;
+
+        /// <summary>
+        /// Creates TokenModel, subscribes to PlayerColorChangedEvents and publishes TokenViewModelCreatedEvent
+        /// </summary>
+        /// <param name="eventAggregator"></param>
         public TokenViewModel(IEventAggregator eventAggregator)
         {
             TokenModel = new TokenModel();
-            this._eventAggregator = eventAggregator;
-            this._eventAggregator.GetEvent<PlayerColorChangedEvent>()
+
+            // some default values for the properties
+            Player = 0;
+            State = TokenState.Empty;
+
+            this.eventAggregator = eventAggregator;
+            this.eventAggregator.GetEvent<PlayerColorChangedEvent>()
             .Subscribe(pc => { if (pc.player == this.Player) this.PlayerColor = pc.color; });
-            this._eventAggregator.GetEvent<PlayerColorChangedEvent>().Publish(this);
+            this.eventAggregator.GetEvent<TokenViewModelCreatedEvent>().Publish(this);
         }
 
-        
-       
         #endregion
 
         #region Properties
 
-        public TokenModel TokenModel
-        {
-            get
-            {
-                return tokenModel;
-            }
-            set
-            {
-                tokenModel = value;
-                OnPropertyChanged("TokenModel");
-            }
-        }
+        /// <summary>
+        /// Private property wrapping the TokenModel
+        /// </summary>
+        private TokenModel TokenModel { get; set; }
+
+
+        /// <summary>
+        /// Tracks the row and fires property changed "Row"
+        /// </summary>
         public int Row
         {
             get
             {
-                return tokenModel.Row;
+                return TokenModel.Row;
             }
             set
             {
-                tokenModel.Row = value;
+                TokenModel.Row = value;
                 OnPropertyChanged("Row");
             }
         }
+
+        /// <summary>
+        /// Tracks the column and fires property changed "Column"
+        /// </summary>
         public int Column
         {
             get
             {
-                return tokenModel.Column;
+                return TokenModel.Column;
             }
             set
             {
-                tokenModel.Column = value;
+                TokenModel.Column = value;
                 OnPropertyChanged("Column");
             }
         }
+
+        /// <summary>
+        /// Tracks the Player number/id and fires property changed "Player"
+        /// </summary>
         public int Player
         {
             get
             {
-                return tokenModel.Player;
+                return TokenModel.Player;
             }
             set
             {
-                tokenModel.Player = value;
+                TokenModel.Player = value;
                 OnPropertyChanged("Player");    // do we need this? we only need to fire property changed 
                                                 //events if the view is bound to that property (directly or indirectly)
                 OnPropertyChanged("Fill");      // depends on player 
             }
         }
+
+        /// <summary>
+        /// Tracks the underlying TokenModel state and fires property changed "State"
+        /// </summary>
         public TokenState State
         {
             get
             {
-                return tokenModel.State;
+                return TokenModel.State;
             }
             set
             {
-                tokenModel.State = value;
+                TokenModel.State = value;
                 OnPropertyChanged("State");
                 OnPropertyChanged("Fill");
             }
         }
 
+        /// <summary>
+        /// Property that determines the fill color for the view shape. This will depend
+        /// on the Player and State properties.
+        /// </summary>
         public Brush Fill
         {
             get
@@ -103,6 +127,7 @@
                         brush = new SolidColorBrush(Color.FromArgb(100,100,100,100));
                         break;
                     case TokenState.Hover:
+                    case TokenState.Ready:
                     case TokenState.Placed:
                         brush = new SolidColorBrush(PlayerColor);
                         break;
@@ -115,6 +140,18 @@
                 return brush;
             }
         }
+
+        /// <summary>
+        /// Property that determines the stroke color for the view shape. This will depend
+        /// on the Player and State properties
+        /// </summary>
+        public Brush Stroke { get; set; }
+
+        /// <summary>
+        /// Property to trake the player color setting. Value is set when PlayerColorChangedEvent is 
+        /// recieved. This will fire property changed "Fill" and "Stroke" since they depend on the 
+        /// player color.
+        /// </summary>
         public Color PlayerColor
         {
             get
@@ -125,10 +162,21 @@
             {
                 color = value;
                 OnPropertyChanged("Fill");
+                OnPropertyChanged("Stroke");
             }
         }
 
         #endregion
+
+        public static int CantorHashCoords(int a, int b)
+        {
+            return (a + b) * (a + b + 1) / 2 + a;
+        }
+
+        public override int GetHashCode()
+        {
+            return CantorHashCoords(Row, Column);
+        }
 
         #region Helpers
 

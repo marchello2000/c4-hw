@@ -9,11 +9,11 @@
             <!--:DesignHeight="300" d:DesignWidth="300">-->
 
 
-    <Border BorderThickness="0" Margin="5"
-                        CornerRadius="5,5,5,5" BorderBrush="Black">
-        <Border.Background>
-            <SolidColorBrush Color="{Binding Color}" />
-        </Border.Background>
+    <Border BorderThickness="0" 
+            Margin="5"
+            CornerRadius="5,5,5,5" 
+            BorderBrush="Black"
+            Background="{Binding Background}">
         <GroupBox Header="{Binding ElementName=uc, Path=Heading}" Margin="5">
             <Grid>
                 <Grid.RowDefinitions>
@@ -30,7 +30,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="Name: " Grid.Row="0" Grid.Column="0" Margin="1" FontWeight="Bold"/>
-                    <TextBox Name="PlayerName" Width="100" Grid.Row="0" Grid.Column="1" Margin="5" Background="{Binding ColorOne}"/>
+                    <TextBox Name="PlayerName" Width="100" Grid.Row="0" Grid.Column="1" Margin="5" Background="{Binding Background}"/>
                     <CheckBox Name="PlayerAI" Content="AI" Grid.Row="1" Grid.Column="1" Margin="1" FontWeight="Bold"/>
                 </Grid>
                 <StackPanel Grid.Row="1" Grid.Column="0">

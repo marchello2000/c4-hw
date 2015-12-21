@@ -1,13 +1,16 @@
 ﻿namespace FourPlanGrid.Game.Views
 {
     using System.Windows;
-
     using FourPlanGrid.Game.ViewModels;
-    using System.ComponentModel;    /// <summary>
-                                    /// Interaction logic for MainWindow.xaml
-                                    /// </summary>
+
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
     public partial class MainWindowView : Window
     {
+        /// <summary>
+        /// Initializes the player settings VMs and sets the player number and binds them to the player settings views
+        /// </summary>
         public MainWindowView()
         {
             InitializeComponent();

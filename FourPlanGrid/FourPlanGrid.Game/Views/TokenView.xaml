@@ -4,18 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FourPlanGrid.Game.Views"
-             mc:Ignorable="d" >
+             mc:Ignorable="d"
+             Name="uc">
 
     <UserControl.Style>
         <Style TargetType="UserControl">
-            <Setter Property="Grid.Row" Value="{Binding Row}" />
-            <Setter Property="Grid.Column" Value="{Binding Column}" />
+            <Setter Property="Grid.Row" Value="{Binding Row, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+            <Setter Property="Grid.Column" Value="{Binding Column, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
         </Style>
     </UserControl.Style>
 
     <Ellipse Name="ep"
              Stroke="{Binding Stroke}"
              Fill="{Binding Fill}">
+        <Ellipse.InputBindings>
+            <MouseBinding Gesture="LeftClick" 
+                          Command="{Binding DataContext.TokenPlacedCommand, 
+                                            RelativeSource={RelativeSource FindAncestor, 
+                                            AncestorType={x:Type local:GameBoardView}}}"
+                          CommandParameter="{Binding ElementName=uc, Path=DataContext}"/>
+        </Ellipse.InputBindings>
     </Ellipse>
+    
+
+
+    
 
 </UserControl>

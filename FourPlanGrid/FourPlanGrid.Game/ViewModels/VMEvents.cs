@@ -19,4 +19,10 @@
     /// For alerting other view models that a TokenViewModel was created
     /// </summary>
     class TokenViewModelCreatedEvent : Prism.Events.PubSubEvent<TokenViewModel> { }
+
+    /// <summary>
+    /// Used to alert other view models that a new game event has been triggered. 
+    /// Any game/board state reset.
+    /// </summary>
+    class NewGameEvent : Prism.Events.PubSubEvent<object> { }
 }

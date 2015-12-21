@@ -10,11 +10,10 @@
         public PlayerSettingsView()
         {
             InitializeComponent();
-            //this.DataContext = new ViewModels.PlayerSettingsViewModel(ViewModels.ApplicationService.Instance.EventAggregator);
         }
 
         /// <summary>
-        /// Dependency property so we can have differnet headings on the group box
+        /// Dependency property so we can pass a "heading" for the group box in the xaml
         /// </summary>
         public static readonly DependencyProperty HeadingProperty = DependencyProperty.Register
             ("Heading",typeof(string), typeof(PlayerSettingsView), new PropertyMetadata(string.Empty));

@@ -11,7 +11,7 @@
             <SolidColorBrush Color="#c1c9c6c3" />
         </Border.Background>
         <GroupBox Header="Game Settings" Margin="3">
-            <Button Name="NewGameButton" Content="New Game" Margin="5" Height="25" Width="100"/>
+            <Button Name="NewGameButton" Content="New Game" Margin="5" Height="25" Width="100" Command="{Binding NewGameButtonCommand}"/>
         </GroupBox>
     </Border>
 </UserControl>

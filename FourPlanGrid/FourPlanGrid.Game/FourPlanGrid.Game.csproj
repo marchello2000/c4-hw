@@ -61,9 +61,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Logic\BoardSolver.cs" />
+    <Compile Include="Logic\IBoardWalker.cs" />
+    <Compile Include="Logic\IPlayer.cs" />
     <Compile Include="ValueConverters.cs" />
     <Compile Include="ViewModels\ApplicationService.cs" />
     <Compile Include="ViewModels\GameBoardViewModel.cs" />
+    <Compile Include="ViewModels\GameSettingsViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\PlayerSettingsViewModel.cs" />
     <Compile Include="ViewModels\TokenViewModel.cs" />

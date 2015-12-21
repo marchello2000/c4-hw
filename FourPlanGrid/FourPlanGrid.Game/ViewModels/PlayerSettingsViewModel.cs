@@ -4,33 +4,50 @@
     using System.Windows.Media;
     class PlayerSettingsViewModel : FourPlanGrid.Windows.ObservableObject
     {
+        #region Fields
+        private Color color;
+        protected readonly IEventAggregator eventAggregator;
+        #endregion
 
-        protected readonly IEventAggregator _eventAggregator;
+        #region Contructors
+        /// <summary>
+        /// Default constructor. Class will public PlayerColorChangedEvents 
+        /// </summary>
+        /// <param name="eventAggregator"></param>
         public PlayerSettingsViewModel(IEventAggregator eventAggregator)
         {
-            this._eventAggregator = eventAggregator;
+            this.eventAggregator = eventAggregator;
         }
 
-        
-        private Color color;
-        public Color Color
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Background brush property for textbox and boarder background
+        /// </summary>
+        public Brush Background
+        {
+            get
+            {
+                return new SolidColorBrush(Color);
+            }
+        }
+
+        /// <summary>
+        /// private Color property. Just wrapping the underlying data.
+        /// </summary>
+        private Color Color
         {
             get
             {
                 return color;
             }
-            set
-            {
-                color = value;
-                OnPropertyChanged("Color");
-                OnPropertyChanged("Red");
-                OnPropertyChanged("Blue");
-                OnPropertyChanged("Green");
-                OnPropertyChanged("Alpha");
-
-                PublishColorChanged();
-            }
         }
+
+        /// <summary>
+        /// Red scale of color
+        /// </summary>
         public byte Red
         {
             get
@@ -41,10 +58,14 @@
             {
                 color.R = value;
                 OnPropertyChanged("Red");
-                OnPropertyChanged("Color");
+                OnPropertyChanged("Background");
                 PublishColorChanged();
             }
         }
+
+        /// <summary>
+        /// Blue scale of color
+        /// </summary>
         public byte Blue
         {
             get
@@ -54,11 +75,15 @@
             set
             {
                 color.B = value;
+                OnPropertyChanged("Background");
                 OnPropertyChanged("Blue");
-                OnPropertyChanged("Color");
                 PublishColorChanged();
             }
         }
+
+        /// <summary>
+        /// Green scale of color
+        /// </summary>
         public byte Green
         {
             get
@@ -68,11 +93,15 @@
             set
             {
                 color.G = value;
+                OnPropertyChanged("Background");
                 OnPropertyChanged("Green");
-                OnPropertyChanged("Color");
                 PublishColorChanged();
             }
         }
+
+        /// <summary>
+        /// Alpha scale of color
+        /// </summary>
         public byte Alpha
         {
             get
@@ -82,21 +111,33 @@
             set
             {
                 color.A = value;
+                OnPropertyChanged("Background");
                 OnPropertyChanged("Alpha");
-                OnPropertyChanged("Color");
                 PublishColorChanged();
             }
         }
+
+        /// <summary>
+        /// Player property. Used for publishing PlayerColorChangedEvent
+        /// </summary>
         public int Player { get; set; }
 
+        #endregion
 
+        #region Private Methods
+
+        /// <summary>
+        /// Publishes a PlayerColorChangedEvent
+        /// </summary>
         private void PublishColorChanged()
         {
             PlayerColor pc = new PlayerColor();
             pc.color = Color;
             pc.player = Player;
-            _eventAggregator.GetEvent<PlayerColorChangedEvent>().Publish(pc);
+            eventAggregator.GetEvent<PlayerColorChangedEvent>().Publish(pc);
         }
+
+        #endregion
 
     }
 }
