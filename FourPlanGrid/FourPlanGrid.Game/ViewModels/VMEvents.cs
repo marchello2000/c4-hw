@@ -29,5 +29,4 @@
 
     class TokenPlacedEvent : Prism.Events.PubSubEvent<TokenViewModel> { }
 
-    class CurrentPlayerChangedEvent : Prism.Events.PubSubEvent<int> { }
 }

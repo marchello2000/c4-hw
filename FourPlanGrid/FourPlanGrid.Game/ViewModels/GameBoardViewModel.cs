@@ -49,7 +49,7 @@
             set
             {
                 currentPlayer = value;
-                this.eventAggregator.GetEvent<CurrentPlayerChangedEvent>().Publish(currentPlayer);
+                TokenViewModel.CurrentPlayer = currentPlayer;
             }
         }
         
@@ -75,16 +75,41 @@
 
             // we already know the token is in the Ready state (RelayCommand)
             tokenVM.State = Models.TokenState.Placed;
-            tokenVM.Player = CurrentPlayer;
+            tokenVM.Player = CurrentPlayer; // <-- only place we should assign a player.
+            
 
-            CurrentPlayer = (CurrentPlayer == 1 ? 2 : 1);
-
-            TokenViewModel tVMAbove = GetUp(tokenVM);
-            if (tVMAbove != null)
+            //time to check if we just won
+            ICollection<TokenViewModel> winners = Logic.BoardSolver<TokenViewModel>.Solve(tokenVM, this);
+            if (winners.Count > 0)
             {
-                tVMAbove.State = Models.TokenState.Ready;
+                foreach (TokenViewModel tkVM in tokenVMs)
+                {
+                    if (winners.Contains(tkVM))
+                    {
+                        tkVM.State = Models.TokenState.Winner;
+                    }
+                    else
+                    {
+                        if (tkVM.State == Models.TokenState.Ready || tkVM.State == Models.TokenState.Hover)
+                        {
+                            tkVM.State = Models.TokenState.Empty;
+                        }
+                        else if (tkVM.State == Models.TokenState.Placed)
+                        {
+                            tkVM.State = Models.TokenState.NotWinner;
+                        }
+                    }
+                }
             }
-
+            else // just update for the next turn
+            {
+                CurrentPlayer = (CurrentPlayer == 1 ? 2 : 1);
+                TokenViewModel tVMAbove = GetUp(tokenVM);
+                if (tVMAbove != null)
+                {
+                    tVMAbove.State = Models.TokenState.Ready;
+                }
+            }
         }
         #endregion
 
@@ -104,6 +129,7 @@
             CurrentPlayer = 1;
             foreach (TokenViewModel tokenVM in tokenVMs)
             {
+                tokenVM.Player = 0;
                 tokenVM.State = (tokenVM.Row == 5 ? Models.TokenState.Ready : Models.TokenState.Empty);
             }
             

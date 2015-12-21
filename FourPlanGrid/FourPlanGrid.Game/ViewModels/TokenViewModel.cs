@@ -10,9 +10,9 @@
     class TokenViewModel : ObservableObject, Logic.IPlayer
     {
         #region Fields
-        private int currentPlayer;
+        private static int currentPlayer;
 
-        private Color colorOne, colorTwo;
+        private static Color colorOne, colorTwo;
         private ICommand tokenPlacedCommand;
         private ICommand tokenEnterCommand;
         private ICommand tokenLeaveCommand;
@@ -29,6 +29,7 @@
         public TokenViewModel(IEventAggregator eventAggregator)
         {
             TokenModel = new TokenModel();
+            this.eventAggregator = eventAggregator;
 
             // some default values for the properties
             Player = 0;
@@ -43,12 +44,6 @@
             tokenLeaveCommand = new RelayCommand( o => this.State = Models.TokenState.Ready,
                                                   o => this.State == Models.TokenState.Hover);
 
-            this.eventAggregator = eventAggregator;
-
-            this.eventAggregator.GetEvent<CurrentPlayerChangedEvent>()
-            .Subscribe(obj => CurrentPlayer = (obj as int?) ?? 0);
-
-            
             this.eventAggregator.GetEvent<PlayerColorChangedEvent>()
             .Subscribe(pc =>
             {
@@ -56,6 +51,9 @@
                 if (pc.player == 2) PlayerTwoColor = pc.color;
             });
             this.eventAggregator.GetEvent<TokenViewModelCreatedEvent>().Publish(this);
+
+
+            
         }
 
         #endregion
@@ -155,7 +153,7 @@
             }
         }
 
-        public int CurrentPlayer
+        public static int CurrentPlayer
         {
             get
             {
@@ -206,9 +204,11 @@
                         brush = new SolidColorBrush(GetTokenColor());
                         break;
                     case TokenState.Winner:
+                        brush = new RadialGradientBrush(Color.FromArgb(255,255,255,255), GetTokenColor());
+                        break;
                     case TokenState.NotWinner:
                     default:
-                        brush = new SolidColorBrush(Color.FromArgb(0,0,0,0));
+                        brush = new SolidColorBrush(GetTokenColor());
                         break;
                 }
                 return brush;
@@ -227,7 +227,7 @@
                 switch (State)
                 {
                     case TokenState.Empty:
-                        brush = new SolidColorBrush(Color.FromArgb(100, 100, 100, 100));
+                        brush = new SolidColorBrush(Color.FromArgb(50, 50, 50, 50));
                         break;
                     case TokenState.Hover:
                         brush = new SolidColorBrush(GetTokenColor());

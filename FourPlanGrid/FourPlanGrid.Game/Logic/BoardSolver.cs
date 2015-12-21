@@ -22,7 +22,9 @@ namespace FourPlanGrid.Game.Logic
             results.UnionWith(SolveLine(cur, itr.GetRightUp, itr.GetLeftDown));
             results.UnionWith(SolveLine(cur, itr.GetUp, itr.GetDown));
             results.UnionWith(SolveLine(cur, itr.GetLeftUp, itr.GetRightDown));
-            results.Add(cur);
+
+            if (results.Count > 0) // i.e. there is some winning set, so add current
+                results.Add(cur);
 
             return results;
         }

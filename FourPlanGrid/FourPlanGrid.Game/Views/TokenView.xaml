@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:FourPlanGrid.Game.Views"
+             xmlns:local="clr-namespace:FourPlanGrid.Game"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
              mc:Ignorable="d"
              Name="uc">
@@ -15,9 +15,18 @@
         </Style>
     </UserControl.Style>
 
+    <UserControl.Resources>
+        <local:PercentageConverter x:Key="PercentageConverter"/>
+    </UserControl.Resources>
+
     <Ellipse Name="ep"
              Stroke="{Binding Stroke}"
-             Fill="{Binding Fill}">
+             Fill="{Binding Fill}"
+             StrokeThickness="{Binding 
+                       Converter={StaticResource PercentageConverter}, 
+                       ElementName=ep, 
+                       Path=ActualWidth, 
+                       ConverterParameter=0.05}">
         <Ellipse.InputBindings>
             <MouseBinding Gesture="LeftClick" 
                           Command="{Binding TokenPlacedCommand}"/>
@@ -31,9 +40,5 @@
             </i:EventTrigger>
         </i:Interaction.Triggers>
     </Ellipse>
-    
-
-
-    
 
 </UserControl>
