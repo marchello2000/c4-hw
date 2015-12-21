@@ -10,7 +10,7 @@
     class TokenViewModel : ObservableObject, Logic.IPlayer
     {
         #region Fields
-        private Color color;
+        private Color color, colorOne, colorTwo;
 
         protected readonly IEventAggregator eventAggregator;
         #endregion
@@ -31,7 +31,11 @@
 
             this.eventAggregator = eventAggregator;
             this.eventAggregator.GetEvent<PlayerColorChangedEvent>()
-            .Subscribe(pc => { if (pc.player == this.Player) this.PlayerColor = pc.color; });
+            .Subscribe(pc =>
+            {
+                if (pc.player == 1) PlayerOneColor = pc.color;
+                if (pc.player == 2) PlayerTwoColor = pc.color;
+            });
             this.eventAggregator.GetEvent<TokenViewModelCreatedEvent>().Publish(this);
         }
 
@@ -89,9 +93,9 @@
             set
             {
                 TokenModel.Player = value;
-                OnPropertyChanged("Player");    // do we need this? we only need to fire property changed 
-                                                //events if the view is bound to that property (directly or indirectly)
+                OnPropertyChanged("Stroke");
                 OnPropertyChanged("Fill");      // depends on player 
+                PlayerColor = GetPlayerColor();
             }
         }
 
@@ -107,8 +111,8 @@
             set
             {
                 TokenModel.State = value;
-                OnPropertyChanged("State");
                 OnPropertyChanged("Fill");
+                OnPropertyChanged("Stroke");
             }
         }
 
@@ -124,10 +128,12 @@
                 switch (State)
                 {
                     case TokenState.Empty:
-                        brush = new SolidColorBrush(Color.FromArgb(100,100,100,100));
+                        brush = new SolidColorBrush(Color.FromArgb(0,0,0,0));
                         break;
                     case TokenState.Hover:
                     case TokenState.Ready:
+                        brush = new SolidColorBrush(Color.FromArgb(100, 100, 100, 100));
+                        break;
                     case TokenState.Placed:
                         brush = new SolidColorBrush(PlayerColor);
                         break;
@@ -145,7 +151,34 @@
         /// Property that determines the stroke color for the view shape. This will depend
         /// on the Player and State properties
         /// </summary>
-        public Brush Stroke { get; set; }
+        public Brush Stroke
+        {
+            get
+            {
+                Brush brush;
+                switch (State)
+                {
+                    case TokenState.Empty:
+                        brush = new SolidColorBrush(Color.FromArgb(100, 100, 100, 100));
+                        break;
+                    case TokenState.Hover:
+                        brush = new SolidColorBrush(PlayerColor);
+                        break;
+                    case TokenState.Ready:
+                        brush = new SolidColorBrush(Color.FromArgb(200, 100, 100, 100));
+                        break;
+                    case TokenState.Placed:
+                        brush = new SolidColorBrush(Color.FromArgb(200, 0, 0, 0));
+                        break;
+                    case TokenState.Winner:
+                    case TokenState.NotWinner:
+                    default:
+                        brush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                        break;
+                }
+                return brush;
+            }
+        }
 
         /// <summary>
         /// Property to trake the player color setting. Value is set when PlayerColorChangedEvent is 
@@ -166,6 +199,37 @@
             }
         }
 
+        private Color PlayerOneColor
+        {
+            get
+            {
+                return colorOne;
+            }
+            set
+            {
+                colorOne = value;
+                if (Player == 1)
+                {
+                    PlayerColor = colorOne; // update placed tokens immediately
+                }
+            }
+        }
+        private Color PlayerTwoColor
+        {
+            get
+            {
+                return colorTwo;
+            }
+            set
+            {
+                colorTwo = value;
+                if (Player == 2)
+                {
+                    PlayerColor = colorTwo;
+                }
+            }
+        }
+
         #endregion
 
         public static int CantorHashCoords(int a, int b)
@@ -180,6 +244,13 @@
 
         #region Helpers
 
+        private Color GetPlayerColor()
+        {
+            if (Player == 1) return PlayerOneColor;
+            else if (Player == 2) return PlayerTwoColor;
+
+            return Color.FromArgb(100, 100, 100, 100); // ugly gray color
+        }
 
         #endregion
     }

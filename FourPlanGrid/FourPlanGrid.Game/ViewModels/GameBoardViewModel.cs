@@ -36,9 +36,20 @@
 
         private bool IsPlaceable(object obj)
         {
-            TokenViewModel tokenVM = obj as TokenViewModel;
+            #region Parameter Validation
+            if (obj == null)
+            {
+                throw new System.ArgumentNullException("FourPlanGrid.Game.ViewModels.GameBoardViewModel.IsPlaceable");
+            }
 
-            return true;
+            TokenViewModel tokenVM = obj as TokenViewModel;
+            if (tokenVM == null)
+            {
+                throw new System.ArgumentException("FourPlanGrid.Game.ViewModels.GameBoardViewModel.IsPlaceable unable to cast to TokenViewModel");
+            }
+            #endregion
+
+            return tokenVM.State == Models.TokenState.Ready || tokenVM.State == Models.TokenState.Hover;
         }
 
         #region Properties
@@ -56,17 +67,42 @@
                 tokenPlacedCommand = value;
             }
         }
+
+        public int CurrentPlayer { get; set; }
+        
         #endregion
 
 
         #region Private Methods
-        /// <summary>
-        /// Publishes new game event
-        /// </summary>
-        /// <param name="obj"></param>
+        
         private void PlaceToken(object obj)
         {
-            obj = null;
+            #region Parameter Validation
+            if (obj == null)
+            {
+                throw new System.ArgumentNullException("FourPlanGrid.Game.ViewModels.GameBoardViewModel.IsPlaceable");
+            }
+
+            TokenViewModel tokenVM = obj as TokenViewModel;
+            if (tokenVM == null)
+            {
+                throw new System.ArgumentException("FourPlanGrid.Game.ViewModels.GameBoardViewModel.IsPlaceable unable to cast to TokenViewModel");
+            }
+            #endregion
+
+            // we already know the token is in the Ready state (RelayCommand)
+            tokenVM.State = Models.TokenState.Placed;
+            tokenVM.Player = CurrentPlayer;
+
+            CurrentPlayer = (CurrentPlayer == 1 ? 2 : 1);
+
+            TokenViewModel tVMAbove = GetUp(tokenVM);
+            if (tVMAbove != null)
+            {
+                tVMAbove.Player = CurrentPlayer;
+                tVMAbove.State = Models.TokenState.Ready;
+            }
+
         }
         #endregion
 
@@ -83,9 +119,10 @@
 
         private void NewGame(object obj)
         {
+            CurrentPlayer = 1;
             foreach (TokenViewModel tokenVM in tokenVMs)
             {
-                tokenVM.Player = 1;
+                tokenVM.Player = CurrentPlayer;
                 tokenVM.State = (tokenVM.Row == 5 ? Models.TokenState.Ready : Models.TokenState.Empty);
             }
             
@@ -94,42 +131,42 @@
         #region IBoardWalker
         public TokenViewModel GetRight(TokenViewModel cur)
         {
-            return GetTokenVM(cur.Row + 1, cur.Column);
+            return GetTokenVM(cur.Row, cur.Column + 1);
         }
 
         public TokenViewModel GetRightUp(TokenViewModel cur)
         {
-            return GetTokenVM(cur.Row + 1, cur.Column + 1);
+            return GetTokenVM(cur.Row - 1, cur.Column + 1);
         }
 
         public TokenViewModel GetUp(TokenViewModel cur)
         {
-            return GetTokenVM(cur.Row, cur.Column + 1);
+            return GetTokenVM(cur.Row - 1, cur.Column);
         }
 
         public TokenViewModel GetLeftUp(TokenViewModel cur)
         {
-            return GetTokenVM(cur.Row - 1, cur.Column + 1);
+            return GetTokenVM(cur.Row - 1, cur.Column - 1);
         }
 
         public TokenViewModel GetLeft(TokenViewModel cur)
         {
-            return GetTokenVM(cur.Row - 1, cur.Column);
+            return GetTokenVM(cur.Row, cur.Column - 1);
         }
 
         public TokenViewModel GetLeftDown(TokenViewModel cur)
         {
-            return GetTokenVM(cur.Row - 1, cur.Column - 1);
+            return GetTokenVM(cur.Row + 1, cur.Column - 1);
         }
 
         public TokenViewModel GetDown(TokenViewModel cur)
         {
-            return GetTokenVM(cur.Row, cur.Column - 1);
+            return GetTokenVM(cur.Row + 1, cur.Column);
         }
 
         public TokenViewModel GetRightDown(TokenViewModel cur)
         {
-            return GetTokenVM(cur.Row + 1, cur.Column - 1);
+            return GetTokenVM(cur.Row + 1, cur.Column + 1);
         }
         #endregion
     }

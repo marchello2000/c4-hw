@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FourPlanGrid.Game.Views"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
              mc:Ignorable="d"
              Name="uc">
 
@@ -24,6 +25,13 @@
                                             AncestorType={x:Type local:GameBoardView}}}"
                           CommandParameter="{Binding ElementName=uc, Path=DataContext}"/>
         </Ellipse.InputBindings>
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="MouseEnter" >
+                <i:InvokeCommandAction Command="{Binding DataContext.TokenPlacedCommand, 
+                                            RelativeSource={RelativeSource FindAncestor, 
+                                            AncestorType={x:Type local:GameBoardView}}}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
     </Ellipse>
     
 

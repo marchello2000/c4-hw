@@ -7,6 +7,12 @@
     /// </summary>
     public partial class GameBoardView : UserControl
     {
+        /// <summary>
+        /// These really could be adjustable by the user.
+        /// </summary>
+        public static int NumberOfRows = 6;
+        public static int NumberOfColumns = 7;
+
         public GameBoardView()
         {
             InitializeComponent();
@@ -20,8 +26,7 @@
         /// </summary>
         private void InitBoard()
         {
-            const int NumberOfRows = 6;
-            const int NumberOfColumns = 7;
+            
 
             for (int row = 0; row < NumberOfRows; row++)
             {
