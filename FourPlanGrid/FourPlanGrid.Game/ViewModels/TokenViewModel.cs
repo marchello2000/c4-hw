@@ -5,13 +5,18 @@
     using Prism.Events;
     using FourPlanGrid.Windows;
     using FourPlanGrid.Game.Models;
-    
-    
+    using System.Windows.Input;
+
     class TokenViewModel : ObservableObject, Logic.IPlayer
     {
         #region Fields
-        private Color color, colorOne, colorTwo;
+        private int currentPlayer;
 
+        private Color colorOne, colorTwo;
+        private ICommand tokenPlacedCommand;
+        private ICommand tokenEnterCommand;
+        private ICommand tokenLeaveCommand;
+    
         protected readonly IEventAggregator eventAggregator;
         #endregion
 
@@ -29,7 +34,21 @@
             Player = 0;
             State = TokenState.Empty;
 
+            tokenPlacedCommand = new RelayCommand( o => this.eventAggregator.GetEvent<TokenPlacedEvent>().Publish(this), 
+                                                   o => this.State == Models.TokenState.Ready || this.State == Models.TokenState.Hover);
+
+            tokenEnterCommand = new RelayCommand( o => this.State = Models.TokenState.Hover,
+                                                  o => this.State == Models.TokenState.Ready);
+
+            tokenLeaveCommand = new RelayCommand( o => this.State = Models.TokenState.Ready,
+                                                  o => this.State == Models.TokenState.Hover);
+
             this.eventAggregator = eventAggregator;
+
+            this.eventAggregator.GetEvent<CurrentPlayerChangedEvent>()
+            .Subscribe(obj => CurrentPlayer = (obj as int?) ?? 0);
+
+            
             this.eventAggregator.GetEvent<PlayerColorChangedEvent>()
             .Subscribe(pc =>
             {
@@ -48,6 +67,44 @@
         /// </summary>
         private TokenModel TokenModel { get; set; }
 
+        /// <summary>
+        /// Property for the command when a user places a token.
+        /// </summary>
+        public ICommand TokenPlacedCommand
+        {
+            get
+            {
+                return tokenPlacedCommand;
+            }
+            set
+            {
+                tokenPlacedCommand = value;
+            }
+        }
+
+        public ICommand TokenEnterCommand
+        {
+            get
+            {
+                return tokenEnterCommand;
+            }
+            set
+            {
+                tokenEnterCommand = value;
+            }
+        }
+
+        public ICommand TokenLeaveCommand
+        {
+            get
+            {
+                return tokenLeaveCommand;
+            }
+            set
+            {
+                tokenLeaveCommand = value;
+            }
+        }
 
         /// <summary>
         /// Tracks the row and fires property changed "Row"
@@ -95,7 +152,18 @@
                 TokenModel.Player = value;
                 OnPropertyChanged("Stroke");
                 OnPropertyChanged("Fill");      // depends on player 
-                PlayerColor = GetPlayerColor();
+            }
+        }
+
+        public int CurrentPlayer
+        {
+            get
+            {
+                return currentPlayer;
+            }
+            set
+            {
+                currentPlayer = value;
             }
         }
 
@@ -135,7 +203,7 @@
                         brush = new SolidColorBrush(Color.FromArgb(100, 100, 100, 100));
                         break;
                     case TokenState.Placed:
-                        brush = new SolidColorBrush(PlayerColor);
+                        brush = new SolidColorBrush(GetTokenColor());
                         break;
                     case TokenState.Winner:
                     case TokenState.NotWinner:
@@ -162,7 +230,7 @@
                         brush = new SolidColorBrush(Color.FromArgb(100, 100, 100, 100));
                         break;
                     case TokenState.Hover:
-                        brush = new SolidColorBrush(PlayerColor);
+                        brush = new SolidColorBrush(GetTokenColor());
                         break;
                     case TokenState.Ready:
                         brush = new SolidColorBrush(Color.FromArgb(200, 100, 100, 100));
@@ -180,25 +248,6 @@
             }
         }
 
-        /// <summary>
-        /// Property to trake the player color setting. Value is set when PlayerColorChangedEvent is 
-        /// recieved. This will fire property changed "Fill" and "Stroke" since they depend on the 
-        /// player color.
-        /// </summary>
-        public Color PlayerColor
-        {
-            get
-            {
-                return color;
-            }
-            set
-            {
-                color = value;
-                OnPropertyChanged("Fill");
-                OnPropertyChanged("Stroke");
-            }
-        }
-
         private Color PlayerOneColor
         {
             get
@@ -210,7 +259,8 @@
                 colorOne = value;
                 if (Player == 1)
                 {
-                    PlayerColor = colorOne; // update placed tokens immediately
+                    OnPropertyChanged("Fill");
+                    OnPropertyChanged("Stroke");
                 }
             }
         }
@@ -225,7 +275,8 @@
                 colorTwo = value;
                 if (Player == 2)
                 {
-                    PlayerColor = colorTwo;
+                    OnPropertyChanged("Fill");
+                    OnPropertyChanged("Stroke");
                 }
             }
         }
@@ -244,10 +295,10 @@
 
         #region Helpers
 
-        private Color GetPlayerColor()
+        private Color GetTokenColor()
         {
-            if (Player == 1) return PlayerOneColor;
-            else if (Player == 2) return PlayerTwoColor;
+            if (Player == 1 || Player == 0 && CurrentPlayer == 1) return PlayerOneColor;
+            else if (Player == 2 || Player == 0 && CurrentPlayer == 2) return PlayerTwoColor;
 
             return Color.FromArgb(100, 100, 100, 100); // ugly gray color
         }

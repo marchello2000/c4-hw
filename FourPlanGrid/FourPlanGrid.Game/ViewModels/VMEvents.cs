@@ -25,4 +25,9 @@
     /// Any game/board state reset.
     /// </summary>
     class NewGameEvent : Prism.Events.PubSubEvent<object> { }
+
+
+    class TokenPlacedEvent : Prism.Events.PubSubEvent<TokenViewModel> { }
+
+    class CurrentPlayerChangedEvent : Prism.Events.PubSubEvent<int> { }
 }

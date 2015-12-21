@@ -20,16 +20,14 @@
              Fill="{Binding Fill}">
         <Ellipse.InputBindings>
             <MouseBinding Gesture="LeftClick" 
-                          Command="{Binding DataContext.TokenPlacedCommand, 
-                                            RelativeSource={RelativeSource FindAncestor, 
-                                            AncestorType={x:Type local:GameBoardView}}}"
-                          CommandParameter="{Binding ElementName=uc, Path=DataContext}"/>
+                          Command="{Binding TokenPlacedCommand}"/>
         </Ellipse.InputBindings>
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="MouseEnter" >
-                <i:InvokeCommandAction Command="{Binding DataContext.TokenPlacedCommand, 
-                                            RelativeSource={RelativeSource FindAncestor, 
-                                            AncestorType={x:Type local:GameBoardView}}}"/>
+                <i:InvokeCommandAction Command="{Binding TokenEnterCommand}"/>
+            </i:EventTrigger>
+            <i:EventTrigger EventName="MouseLeave" >
+                <i:InvokeCommandAction Command="{Binding TokenLeaveCommand}"/>
             </i:EventTrigger>
         </i:Interaction.Triggers>
     </Ellipse>

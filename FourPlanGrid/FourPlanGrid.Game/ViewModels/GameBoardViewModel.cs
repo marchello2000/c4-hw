@@ -12,10 +12,12 @@
         /// <summary>
         /// ICommand object to hold the RelayCommand for the token placed user action
         /// </summary>
-        private ICommand tokenPlacedCommand;
+        
         protected readonly IEventAggregator eventAggregator;
-        Hashtable board;
-        List<TokenViewModel> tokenVMs;
+        private Hashtable board;
+        private List<TokenViewModel> tokenVMs;
+        private int currentPlayer;
+
         #endregion
 
 
@@ -27,48 +29,29 @@
             .Subscribe(tVM => AddTokenVM(tVM));
             this.eventAggregator.GetEvent<NewGameEvent>()
             .Subscribe(obj => NewGame(obj));
+            this.eventAggregator.GetEvent<TokenPlacedEvent>()
+            .Subscribe(obj => PlaceToken(obj));
 
             board = new Hashtable();
             tokenVMs = new List<TokenViewModel>();
-            tokenPlacedCommand = new RelayCommand(PlaceToken, param => IsPlaceable(param));
+            
         }
         #endregion
 
-        private bool IsPlaceable(object obj)
-        {
-            #region Parameter Validation
-            if (obj == null)
-            {
-                throw new System.ArgumentNullException("FourPlanGrid.Game.ViewModels.GameBoardViewModel.IsPlaceable");
-            }
-
-            TokenViewModel tokenVM = obj as TokenViewModel;
-            if (tokenVM == null)
-            {
-                throw new System.ArgumentException("FourPlanGrid.Game.ViewModels.GameBoardViewModel.IsPlaceable unable to cast to TokenViewModel");
-            }
-            #endregion
-
-            return tokenVM.State == Models.TokenState.Ready || tokenVM.State == Models.TokenState.Hover;
-        }
-
         #region Properties
-        /// <summary>
-        /// Property to wrap the newGameButtonCommand field
-        /// </summary>
-        public ICommand TokenPlacedCommand
+        
+        public int CurrentPlayer
         {
             get
             {
-                return tokenPlacedCommand;
+                return currentPlayer;
             }
             set
             {
-                tokenPlacedCommand = value;
+                currentPlayer = value;
+                this.eventAggregator.GetEvent<CurrentPlayerChangedEvent>().Publish(currentPlayer);
             }
         }
-
-        public int CurrentPlayer { get; set; }
         
         #endregion
 
@@ -99,7 +82,6 @@
             TokenViewModel tVMAbove = GetUp(tokenVM);
             if (tVMAbove != null)
             {
-                tVMAbove.Player = CurrentPlayer;
                 tVMAbove.State = Models.TokenState.Ready;
             }
 
@@ -122,7 +104,6 @@
             CurrentPlayer = 1;
             foreach (TokenViewModel tokenVM in tokenVMs)
             {
-                tokenVM.Player = CurrentPlayer;
                 tokenVM.State = (tokenVM.Row == 5 ? Models.TokenState.Ready : Models.TokenState.Empty);
             }
             
