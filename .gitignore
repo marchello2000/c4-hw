@@ -194,3 +194,8 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+FourPlanGrid/FourPlanGrid.Game/design/mockups.bmpr
+FourPlanGrid/FourPlanGrid.Game/design/png/Game Over _ Pre Game.png
+FourPlanGrid/FourPlanGrid.Game/design/png/New Game.png
+FourPlanGrid/FourPlanGrid.Game/design/png/Player Two's Turn.png
+FourPlanGrid/FourPlanGrid.Game/design/png/Pre Game.png
