@@ -4,6 +4,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Windows.Threading;
     class GameBoardViewModel : Logic.IBoardWalker<TokenViewModel>
     {
@@ -182,7 +183,9 @@
             (sender as DispatcherTimer).Stop();
             
 
-            // just make a random move
+            // just make a random move for now. It would be pretty straight forward to modify this to 
+            // loop over our moves and check if they win. if not, check if they win for the opponent. if 
+            // not then be cleaver or random.
             List<TokenViewModel> moves = tokenVMs.FindAll(i => i.State == Models.TokenState.ReadyAI);
             Random rnd = new Random();
             if (moves.Count > 0)
@@ -232,6 +235,7 @@
                 tokenVM.Player = 0;
                 tokenVM.State = (tokenVM.Row == NumberOfRows - 1 ? Models.TokenState.Ready : Models.TokenState.Empty);
             }
+            Thread.Sleep(500);
             StartTurn();
         }
 
