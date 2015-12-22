@@ -1,12 +1,18 @@
 ﻿namespace FourPlanGrid.Game.ViewModels
 {
     using Prism.Events;
+    using System.Windows.Input;
     using System.Windows.Media;
-    class PlayerSettingsViewModel : FourPlanGrid.Windows.ObservableObject
+    using Windows;
+    class PlayerSettingsViewModel : ObservableObject
     {
         #region Fields
         private Color color;
+        private string playerName;
         protected readonly IEventAggregator eventAggregator;
+
+        private ICommand aiCheckedCommand;
+
         #endregion
 
         #region Contructors
@@ -17,11 +23,38 @@
         public PlayerSettingsViewModel(IEventAggregator eventAggregator)
         {
             this.eventAggregator = eventAggregator;
+            //this.aiCheckedCommand = new RelayCommand(o => PublishAIEnabledChanged(), o => true);
         }
 
         #endregion
 
         #region Properties
+
+        public ICommand AICheckedCommand
+        {
+            get
+            {
+                return aiCheckedCommand;
+            }
+            set
+            {
+                aiCheckedCommand = value;
+            }
+        }
+
+        private bool aiEnabled;
+        public bool AIEnabled
+        {
+            get
+            {
+                return aiEnabled;
+            }
+            set
+            {
+                aiEnabled = value;
+                PublishAIEnabledChanged();
+            }
+        }
 
         /// <summary>
         /// Background brush property for textbox and boarder background
@@ -122,6 +155,19 @@
         /// </summary>
         public int Player { get; set; }
 
+        public string PlayerName
+        {
+            get
+            {
+                return playerName;
+            }
+            set
+            {
+                playerName = value;
+                OnPropertyChanged("PlayerName");
+            }
+        }
+
         #endregion
 
         #region Private Methods
@@ -135,6 +181,14 @@
             pc.color = Color;
             pc.player = Player;
             eventAggregator.GetEvent<PlayerColorChangedEvent>().Publish(pc);
+        }
+
+        private void PublishAIEnabledChanged()
+        {
+            PlayerAIEnabled pc = new PlayerAIEnabled();
+            pc.enabled = AIEnabled;
+            pc.player = Player;
+            eventAggregator.GetEvent<PlayerAIEnabledChangedEvent>().Publish(pc);
         }
 
         #endregion

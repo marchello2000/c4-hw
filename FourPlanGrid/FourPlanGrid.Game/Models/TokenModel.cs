@@ -11,6 +11,7 @@ namespace FourPlanGrid.Game.Models
         Empty,
         Hover,
         Ready,
+        ReadyAI,
         Placed,
         Winner,
         NotWinner,

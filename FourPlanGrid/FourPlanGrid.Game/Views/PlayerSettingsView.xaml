@@ -30,8 +30,17 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="Name: " Grid.Row="0" Grid.Column="0" Margin="1" FontWeight="Bold"/>
-                    <TextBox Name="PlayerName" Width="100" Grid.Row="0" Grid.Column="1" Margin="5" Background="{Binding Background}"/>
-                    <CheckBox Name="PlayerAI" Content="AI" Grid.Row="1" Grid.Column="1" Margin="1" FontWeight="Bold"/>
+                    <TextBox Name="PlayerName" Width="100" 
+                             Grid.Row="0" Grid.Column="1" 
+                             Margin="5" Background="{Binding Background}"
+                             Text="{Binding PlayerName, UpdateSourceTrigger=PropertyChanged}"/>
+                    <CheckBox Name="PlayerAI" Content="AI" 
+                              Grid.Row="1" Grid.Column="1" 
+                              Margin="1" FontWeight="Bold" 
+                              IsChecked="{Binding AIEnabled, 
+                                                  UpdateSourceTrigger=PropertyChanged, 
+                                                  Mode=OneWayToSource}" 
+                              Command="{Binding AICheckedCommand}"/>
                 </Grid>
                 <StackPanel Grid.Row="1" Grid.Column="0">
                     <Slider  Value="{Binding Red, UpdateSourceTrigger=PropertyChanged}" 

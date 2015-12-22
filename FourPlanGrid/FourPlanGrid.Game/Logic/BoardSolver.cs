@@ -29,8 +29,7 @@ namespace FourPlanGrid.Game.Logic
             return results;
         }
 
-        public delegate BoardElementType itrDirectionDelegate(BoardElementType cur);
-
+        private delegate BoardElementType itrDirectionDelegate(BoardElementType cur);
         private static ICollection<BoardElementType> SolveLine(BoardElementType cur, itrDirectionDelegate forward, itrDirectionDelegate backward)
         {
             List<BoardElementType> results = new List<BoardElementType>();

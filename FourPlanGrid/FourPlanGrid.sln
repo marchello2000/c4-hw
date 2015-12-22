@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoudPlanGrid.Windows", "FoudPlanGrid.Windows\FoudPlanGrid.Windows.csproj", "{76B0DD35-D5F8-4EE3-8FD2-F5D2A546CE55}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FourPlanGrid.Windows", "FoudPlanGrid.Windows\FourPlanGrid.Windows.csproj", "{76B0DD35-D5F8-4EE3-8FD2-F5D2A546CE55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoudPlanGrid.Tests", "FoudPlanGrid.Tests\FoudPlanGrid.Tests.csproj", "{70182EF0-D7DC-42B8-B530-4248CCA6A69E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FourPlanGrid.Tests", "FoudPlanGrid.Tests\FourPlanGrid.Tests.csproj", "{70182EF0-D7DC-42B8-B530-4248CCA6A69E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FourPlanGrid.Game", "FourPlanGrid.Game\FourPlanGrid.Game.csproj", "{B07B27C6-E1A4-4FDF-975D-C35A355E2B5A}"
 EndProject

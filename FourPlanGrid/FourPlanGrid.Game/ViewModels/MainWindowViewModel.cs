@@ -1,7 +1,5 @@
 ﻿namespace FourPlanGrid.Game.ViewModels
 {
-    using Prism.Events;
-    using System.Windows.Input;
     using FourPlanGrid.Windows;
     class MainWindowViewModel : ObservableObject
     {

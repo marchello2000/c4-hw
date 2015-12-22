@@ -10,7 +10,7 @@
 
     <Window.Resources>
         <Style TargetType="Grid">
-            <Setter Property="ShowGridLines"  Value="True"/>
+            <Setter Property="ShowGridLines"  Value="False"/>
         </Style>
         <Style TargetType="Ellipse">
             <Setter Property="Fill" Value="Bisque"/>
@@ -25,18 +25,45 @@
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0" Grid.Row="0">
+            <Grid.Background>
+                <RadialGradientBrush GradientOrigin="0.5,0.5"
+                                     Center="0.5,0.5" >
+                    <GradientStopCollection>
+                        <GradientStop Color="#c1c9c6c3" Offset="0"/>
+                        <GradientStop Color="#AA444444" Offset="0.999"/>
+                    </GradientStopCollection>
+                </RadialGradientBrush>
+            </Grid.Background>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <local:PlayerSettingsView x:Name="PlayerOneSettingsView" Heading="Player One" Grid.Row="0" Grid.Column="0"/>
             <local:PlayerSettingsView x:Name="PlayerTwoSettingsView" Heading="Player Two"  Grid.Row="1" Grid.Column="0"/>
             <local:GameSettingsView Grid.Row="2" Grid.Column="0" VerticalAlignment="Bottom" />
         </Grid>
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.Background>
+                <ImageBrush ImageSource="/Media/skymap.jpg"/>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <local:GameBoardView Grid.Row="0" Grid.Column="1" />
+            <!--
+            <Label Grid.Row="0" Grid.Column="0"
+                   Name="PlayerOneNameLabel" 
+                   Content="{Binding ElementName=PlayerOneSettingsView, 
+                                     Path=DataContext.PlayerName,
+                                     Mode=OneWay,
+                                     UpdateSourceTrigger=PropertyChanged}"/>
+            -->
+            <local:GameBoardView Grid.Row="1" Grid.Column="0" Margin="15"/>
+        </Grid>
+        
 
     </Grid>
 </Window>

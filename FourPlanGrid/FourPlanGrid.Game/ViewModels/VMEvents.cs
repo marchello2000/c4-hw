@@ -9,7 +9,7 @@
 
 
     class PlayerColorChangedEvent : Prism.Events.PubSubEvent<PlayerColor> { }
-    class PlayerColor
+    struct PlayerColor
     {
         public Color color;
         public int player;
@@ -29,4 +29,10 @@
 
     class TokenPlacedEvent : Prism.Events.PubSubEvent<TokenViewModel> { }
 
+    class PlayerAIEnabledChangedEvent : Prism.Events.PubSubEvent<PlayerAIEnabled> { }
+    struct PlayerAIEnabled
+    {
+        public int player;
+        public bool enabled;
+    }
 }

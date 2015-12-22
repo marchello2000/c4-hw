@@ -151,10 +151,22 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FoudPlanGrid.Windows\FoudPlanGrid.Windows.csproj">
+    <ProjectReference Include="..\FoudPlanGrid.Windows\FourPlanGrid.Windows.csproj">
       <Project>{76b0dd35-d5f8-4ee3-8fd2-f5d2a546ce55}</Project>
-      <Name>FoudPlanGrid.Windows</Name>
+      <Name>FourPlanGrid.Windows</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Media\miconi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Media\miconiInv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Media\scintillating_grid.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Media\skymap.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

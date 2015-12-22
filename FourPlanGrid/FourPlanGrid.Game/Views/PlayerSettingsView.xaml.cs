@@ -22,6 +22,5 @@
             get { return (string)GetValue(HeadingProperty); }
             set { SetValue(HeadingProperty, value); }
         }
-
     }
 }

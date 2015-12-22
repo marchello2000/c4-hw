@@ -7,7 +7,7 @@
     <ProjectGuid>{76B0DD35-D5F8-4EE3-8FD2-F5D2A546CE55}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FoudPlanGrid.Windows</RootNamespace>
+    <RootNamespace>FourPlanGrid.Windows</RootNamespace>
     <AssemblyName>FoudPlanGrid.Windows</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

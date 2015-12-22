@@ -6,7 +6,7 @@
     <ProjectGuid>{70182EF0-D7DC-42B8-B530-4248CCA6A69E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FoudPlanGrid.Tests</RootNamespace>
+    <RootNamespace>FourPlanGrid.Tests</RootNamespace>
     <AssemblyName>FoudPlanGrid.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -50,7 +50,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ObservableObjectTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FoudPlanGrid.Windows\FourPlanGrid.Windows.csproj">
+      <Project>{76b0dd35-d5f8-4ee3-8fd2-f5d2a546ce55}</Project>
+      <Name>FourPlanGrid.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FourPlanGrid.Game\FourPlanGrid.Game.csproj">
+      <Project>{b07b27c6-e1a4-4fdf-975d-c35a355e2b5a}</Project>
+      <Name>FourPlanGrid.Game</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

@@ -20,6 +20,7 @@
     </UserControl.Resources>
 
     <Ellipse Name="ep"
+             Margin="5,10"
              Stroke="{Binding Stroke}"
              Fill="{Binding Fill}"
              StrokeThickness="{Binding 

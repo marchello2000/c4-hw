@@ -1,10 +1,10 @@
 ﻿namespace FourPlanGrid.Game.ViewModels
 {
     using Prism.Events;
+    using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Windows.Input;
-    using Windows;
+    using System.Windows.Threading;
     class GameBoardViewModel : Logic.IBoardWalker<TokenViewModel>
     {
 
@@ -16,7 +16,12 @@
         protected readonly IEventAggregator eventAggregator;
         private Hashtable board;
         private List<TokenViewModel> tokenVMs;
-        private int currentPlayer;
+        private static int currentPlayer;
+        private bool playerOneAIEnabled, playerTwoAIEnabled;
+
+        public static int NumberOfRows = 6;
+        public static int NumberOfColumns = 7;
+
 
         #endregion
 
@@ -25,39 +30,60 @@
         public GameBoardViewModel(IEventAggregator eventAggregator)
         {
             this.eventAggregator = eventAggregator;
-            this.eventAggregator.GetEvent<TokenViewModelCreatedEvent>()
-            .Subscribe(tVM => AddTokenVM(tVM));
-            this.eventAggregator.GetEvent<NewGameEvent>()
-            .Subscribe(obj => NewGame(obj));
-            this.eventAggregator.GetEvent<TokenPlacedEvent>()
-            .Subscribe(obj => PlaceToken(obj));
-
+            
             board = new Hashtable();
             tokenVMs = new List<TokenViewModel>();
+
+            InitializeEvents();
+
             
+
         }
         #endregion
 
         #region Properties
         
-        public int CurrentPlayer
+        public static int CurrentPlayer
         {
             get
             {
                 return currentPlayer;
             }
-            set
+            private set
             {
                 currentPlayer = value;
-                TokenViewModel.CurrentPlayer = currentPlayer;
             }
         }
-        
+        private bool PlayerOneAIEnabled
+        {
+            get
+            {
+                return playerOneAIEnabled;
+            }
+            set
+            {
+                playerOneAIEnabled = value;
+                StartTurn(); // will start the AI if we switched mid turn
+            }
+        }
+        private bool PlayerTwoAIEnabled
+        {
+            get
+            {
+                return playerTwoAIEnabled;
+            }
+            set
+            {
+                playerTwoAIEnabled = value;
+                StartTurn(); // will start the AI if we switched mid turn
+            }
+        }
+
         #endregion
 
 
         #region Private Methods
-        
+
         private void PlaceToken(object obj)
         {
             #region Parameter Validation
@@ -82,6 +108,7 @@
             ICollection<TokenViewModel> winners = Logic.BoardSolver<TokenViewModel>.Solve(tokenVM, this);
             if (winners.Count > 0)
             {
+                #region OnWin
                 foreach (TokenViewModel tkVM in tokenVMs)
                 {
                     if (winners.Contains(tkVM))
@@ -100,39 +127,133 @@
                         }
                     }
                 }
+                #endregion
             }
             else // just update for the next turn
             {
-                CurrentPlayer = (CurrentPlayer == 1 ? 2 : 1);
+                // Token above should now be ready
                 TokenViewModel tVMAbove = GetUp(tokenVM);
                 if (tVMAbove != null)
                 {
                     tVMAbove.State = Models.TokenState.Ready;
                 }
+
+                NextPlayer();
+                StartTurn();
             }
         }
+
+        /// <summary>
+        /// 1 -> 2 and 2 -> 1
+        /// </summary>
+        private void NextPlayer()
+        {
+            CurrentPlayer = (CurrentPlayer == 1 ? 2 : 1);
+        }
+
+        private void StartTurn()
+        {
+
+            // check if the current player is an AI and trigger a move
+            if (CurrentPlayer == 1 && PlayerOneAIEnabled || CurrentPlayer == 2 && PlayerTwoAIEnabled)
+            {
+                foreach (TokenViewModel tokenViewModel in tokenVMs.FindAll(i => i.State == Models.TokenState.Ready || i.State == Models.TokenState.Hover))
+                {
+                    tokenViewModel.State = Models.TokenState.ReadyAI;
+                }
+
+                DispatcherTimer dispatcherTimer = new DispatcherTimer();
+                dispatcherTimer.Tick += new System.EventHandler(AITakeTurn);
+                dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+                dispatcherTimer.Start();
+            }
+            else
+            {
+                foreach (TokenViewModel tokenViewModel in tokenVMs.FindAll(i => i.State == Models.TokenState.ReadyAI))
+                {
+                    tokenViewModel.State = Models.TokenState.Ready;
+                }
+            }
+        }
+
+        private void AITakeTurn(object sender, EventArgs e)
+        {
+
+            (sender as DispatcherTimer).Stop();
+            
+
+            // just make a random move
+            List<TokenViewModel> moves = tokenVMs.FindAll(i => i.State == Models.TokenState.ReadyAI);
+            Random rnd = new Random();
+            if (moves.Count > 0)
+                PlaceToken(moves[rnd.Next(moves.Count)]);
+        }
+
+
         #endregion
 
-
+        /// <summary>
+        /// We store off the TokenViewModels by subscribing to the TokenViewModelCreated event.
+        /// This way we always have references to the *child* elements without having to initialize them directly.
+        /// </summary>
+        /// <param name="tokenVM"></param>
         private void AddTokenVM(TokenViewModel tokenVM)
         {
             tokenVMs.Add(tokenVM);
         }
 
+        /// <summary>
+        /// Gets the TokenViewModel object at the specified row and column. Now that the tokens have been initialized
+        /// we can build our hash map as needed when retrieving a TokenViewModel.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
         private TokenViewModel GetTokenVM(int row, int column)
         {
-            return tokenVMs.Find(tk => tk.Row == row && tk.Column == column);
+            if (!board.ContainsKey(TokenViewModel.GetPairingHash(row, column)))
+            {
+                TokenViewModel tkVM = tokenVMs.Find(tk => tk.Row == row && tk.Column == column);
+                if (tkVM != null)
+                    board.Add(TokenViewModel.GetPairingHash(row, column), tkVM);
+            }
+            return board[TokenViewModel.GetPairingHash(row, column)] as TokenViewModel;
         }
 
+        /// <summary>
+        /// Handles NewGameEvent. resets the state of the tokens and the current player
+        /// </summary>
+        /// <param name="obj"></param>
         private void NewGame(object obj)
         {
             CurrentPlayer = 1;
             foreach (TokenViewModel tokenVM in tokenVMs)
             {
                 tokenVM.Player = 0;
-                tokenVM.State = (tokenVM.Row == 5 ? Models.TokenState.Ready : Models.TokenState.Empty);
+                tokenVM.State = (tokenVM.Row == NumberOfRows - 1 ? Models.TokenState.Ready : Models.TokenState.Empty);
             }
+            StartTurn();
+        }
+
+        /// <summary>
+        /// Initialize subscriptions to prism events
+        /// </summary>
+        private void InitializeEvents()
+        {
             
+            this.eventAggregator.GetEvent<TokenViewModelCreatedEvent>()
+            .Subscribe(tVM => AddTokenVM(tVM));
+            this.eventAggregator.GetEvent<NewGameEvent>()
+            .Subscribe(obj => NewGame(obj));
+            this.eventAggregator.GetEvent<TokenPlacedEvent>()
+            .Subscribe(obj => PlaceToken(obj));
+
+            this.eventAggregator.GetEvent<PlayerAIEnabledChangedEvent>()
+            .Subscribe(pc =>
+            {
+                if (pc.player == 1) PlayerOneAIEnabled = pc.enabled;
+                if (pc.player == 2) PlayerTwoAIEnabled = pc.enabled;
+            });
         }
 
         #region IBoardWalker

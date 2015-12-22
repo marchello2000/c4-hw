@@ -7,12 +7,6 @@
     /// </summary>
     public partial class GameBoardView : UserControl
     {
-        /// <summary>
-        /// These really could be adjustable by the user.
-        /// </summary>
-        public static int NumberOfRows = 6;
-        public static int NumberOfColumns = 7;
-
         public GameBoardView()
         {
             InitializeComponent();
@@ -27,10 +21,9 @@
         private void InitBoard()
         {
             
-
-            for (int row = 0; row < NumberOfRows; row++)
+            for (int row = 0; row < ViewModels.GameBoardViewModel.NumberOfRows; row++)
             {
-                for (int column = 0; column < NumberOfColumns; column++)
+                for (int column = 0; column < ViewModels.GameBoardViewModel.NumberOfColumns; column++)
                 {
                     TokenView tokenV = new TokenView();
                     GameGrid.Children.Add(tokenV);
